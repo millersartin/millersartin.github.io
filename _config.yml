@@ -1,3 +1,2 @@
 exclude:
-  - main.html
   - embed.py
