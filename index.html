@@ -171,6 +171,7 @@
             }
 
             .timeframe-buttons {
+                width: 100%;
                 flex-wrap: wrap;
                 justify-content: center;
             }
@@ -188,6 +189,11 @@
 
             .header-cell {
                 padding: 0 4px;
+            }
+
+            /* Remove emoji/special chars from sort indicators on mobile */
+            .header-cell::after {
+                font-family: 'Inter', sans-serif !important;
             }
 
             .table-row {
@@ -267,6 +273,15 @@
 
             .stats-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .timeframe-buttons {
+                width: 100%;
+            }
+
+            /* Further simplify sort indicators on small screens */
+            .header-cell::after {
+                content: '' !important;
             }
 
             .table-row {
@@ -1200,7 +1215,6 @@
             }
         }
 
-        // Fetch volume data from DexScreener for a specific pool
         async function fetchDexScreenerVolume(pairAddress) {
             try {
                 const response = await fetch(`https://api.dexscreener.com/latest/dex/pairs/solana/${pairAddress}`);
@@ -1222,7 +1236,6 @@
             return null;
         }
 
-        // Enrich pools with DexScreener volume data (ONLY on initial load)
         async function enrichPoolsWithVolume(pools, skipDexScreener = false) {
             if (skipDexScreener) {
                 console.log('Skipping DexScreener fetch (using cached data)');
@@ -1295,6 +1308,9 @@
                 addConsoleLog('✓ Meteora API response received', 'success');
 
                 allPools = data.pairs || [];
+
+                await enrichPoolsWithVolume(allPools, skipDexScreener);
+
                 filteredPools = [...allPools];
 
                 console.log('Total pools loaded:', allPools.length);
